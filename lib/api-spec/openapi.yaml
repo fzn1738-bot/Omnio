@@ -1,0 +1,909 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: Voice Agent Platform API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: calls
+    description: Call log operations
+  - name: agents
+    description: AI agent operations
+  - name: leads
+    description: Sales lead operations
+  - name: appointments
+    description: Scheduling operations
+  - name: followups
+    description: Follow-up operations
+  - name: dashboard
+    description: Dashboard analytics
+  - name: alerts
+    description: Alert operations
+  - name: activity
+    description: Activity feed
+
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /calls:
+    get:
+      operationId: listCalls
+      tags: [calls]
+      summary: List call logs
+      parameters:
+        - name: direction
+          in: query
+          schema:
+            type: string
+            enum: [inbound, outbound, all]
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+      responses:
+        "200":
+          description: List of calls
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Call"
+
+  /calls/{id}:
+    get:
+      operationId: getCall
+      tags: [calls]
+      summary: Get call detail
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Call detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Call"
+        "404":
+          description: Not found
+
+  /calls/stats:
+    get:
+      operationId: getCallStats
+      tags: [calls]
+      summary: Get call statistics
+      parameters:
+        - name: days
+          in: query
+          schema:
+            type: integer
+            default: 30
+      responses:
+        "200":
+          description: Call statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CallStats"
+
+  /agents:
+    get:
+      operationId: listAgents
+      tags: [agents]
+      summary: List all AI agents
+      parameters:
+        - name: tier
+          in: query
+          schema:
+            type: string
+            enum: [product, ops, all]
+      responses:
+        "200":
+          description: List of agents
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Agent"
+
+  /agents/{id}:
+    get:
+      operationId: getAgent
+      tags: [agents]
+      summary: Get agent detail
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Agent detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Agent"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateAgent
+      tags: [agents]
+      summary: Update agent configuration
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AgentUpdate"
+      responses:
+        "200":
+          description: Updated agent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Agent"
+        "404":
+          description: Not found
+
+  /leads:
+    get:
+      operationId: listLeads
+      tags: [leads]
+      summary: List sales leads
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [new, qualified, contacted, converted, lost, all]
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+      responses:
+        "200":
+          description: List of leads
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Lead"
+    post:
+      operationId: createLead
+      tags: [leads]
+      summary: Create a lead
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LeadInput"
+      responses:
+        "201":
+          description: Created lead
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Lead"
+
+  /leads/{id}:
+    get:
+      operationId: getLead
+      tags: [leads]
+      summary: Get lead detail
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Lead detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Lead"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateLead
+      tags: [leads]
+      summary: Update lead
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LeadUpdate"
+      responses:
+        "200":
+          description: Updated lead
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Lead"
+        "404":
+          description: Not found
+
+  /appointments:
+    get:
+      operationId: listAppointments
+      tags: [appointments]
+      summary: List appointments
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [scheduled, completed, cancelled, all]
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+      responses:
+        "200":
+          description: List of appointments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Appointment"
+    post:
+      operationId: createAppointment
+      tags: [appointments]
+      summary: Create an appointment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AppointmentInput"
+      responses:
+        "201":
+          description: Created appointment
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Appointment"
+
+  /appointments/{id}:
+    get:
+      operationId: getAppointment
+      tags: [appointments]
+      summary: Get appointment detail
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Appointment detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Appointment"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateAppointment
+      tags: [appointments]
+      summary: Update appointment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AppointmentUpdate"
+      responses:
+        "200":
+          description: Updated appointment
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Appointment"
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteAppointment
+      tags: [appointments]
+      summary: Delete appointment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /follow-ups:
+    get:
+      operationId: listFollowUps
+      tags: [followups]
+      summary: List follow-ups
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, sent, completed, all]
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+      responses:
+        "200":
+          description: List of follow-ups
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FollowUp"
+    post:
+      operationId: createFollowUp
+      tags: [followups]
+      summary: Create a follow-up
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FollowUpInput"
+      responses:
+        "201":
+          description: Created follow-up
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FollowUp"
+
+  /follow-ups/{id}:
+    patch:
+      operationId: updateFollowUp
+      tags: [followups]
+      summary: Update follow-up
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FollowUpUpdate"
+      responses:
+        "200":
+          description: Updated follow-up
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FollowUp"
+        "404":
+          description: Not found
+
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      summary: Get dashboard summary metrics
+      parameters:
+        - name: days
+          in: query
+          schema:
+            type: integer
+            default: 30
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+
+  /alerts:
+    get:
+      operationId: listAlerts
+      tags: [alerts]
+      summary: List active alerts
+      responses:
+        "200":
+          description: List of alerts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Alert"
+
+  /alerts/{id}/dismiss:
+    patch:
+      operationId: dismissAlert
+      tags: [alerts]
+      summary: Dismiss an alert
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AlertDismiss"
+      responses:
+        "200":
+          description: Dismissed alert
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Alert"
+
+  /activity:
+    get:
+      operationId: listActivity
+      tags: [activity]
+      summary: List activity feed
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: Activity feed
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ActivityItem"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+
+    Call:
+      type: object
+      required: [id, direction, status, createdAt]
+      properties:
+        id:
+          type: integer
+        callerName:
+          type: ["string", "null"]
+        phone:
+          type: string
+        direction:
+          type: string
+          enum: [inbound, outbound]
+        status:
+          type: string
+          enum: [completed, missed, in_progress, transferred, voicemail]
+        duration:
+          type: ["integer", "null"]
+        sentiment:
+          type: ["number", "null"]
+        agentType:
+          type: ["string", "null"]
+        outcome:
+          type: ["string", "null"]
+        summary:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+
+    CallStats:
+      type: object
+      required: [totalCalls, inbound, outbound, avgDuration, avgSentiment, timeSaved, revenueOnHours, revenueAfterHours, completionRate, callsByDay, topOutcomes, callTypes, dropOffReasons]
+      properties:
+        totalCalls:
+          type: integer
+        inbound:
+          type: integer
+        outbound:
+          type: integer
+        avgDuration:
+          type: number
+        avgSentiment:
+          type: number
+        timeSaved:
+          type: integer
+        revenueOnHours:
+          type: number
+        revenueAfterHours:
+          type: number
+        completionRate:
+          type: number
+        callsByDay:
+          type: array
+          items:
+            $ref: "#/components/schemas/DailyCallCount"
+        topOutcomes:
+          type: array
+          items:
+            $ref: "#/components/schemas/CountedLabel"
+        callTypes:
+          type: array
+          items:
+            $ref: "#/components/schemas/CountedLabel"
+        dropOffReasons:
+          type: array
+          items:
+            $ref: "#/components/schemas/CountedLabel"
+
+    DailyCallCount:
+      type: object
+      required: [date, inbound, outbound]
+      properties:
+        date:
+          type: string
+        inbound:
+          type: integer
+        outbound:
+          type: integer
+
+    CountedLabel:
+      type: object
+      required: [label, count]
+      properties:
+        label:
+          type: string
+        count:
+          type: integer
+        percentage:
+          type: ["number", "null"]
+
+    Agent:
+      type: object
+      required: [id, name, tier, role, status, successRate, callsHandled, avgResponseMs, isActive]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        tier:
+          type: string
+          enum: [product, ops]
+        role:
+          type: string
+        status:
+          type: string
+          enum: [active, idle, error, degraded]
+        successRate:
+          type: number
+        callsHandled:
+          type: integer
+        avgResponseMs:
+          type: integer
+        isActive:
+          type: boolean
+        lastActive:
+          type: ["string", "null"]
+        errorMessage:
+          type: ["string", "null"]
+
+    AgentUpdate:
+      type: object
+      properties:
+        isActive:
+          type: boolean
+        status:
+          type: string
+
+    Lead:
+      type: object
+      required: [id, name, status, createdAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        phone:
+          type: ["string", "null"]
+        email:
+          type: ["string", "null"]
+        status:
+          type: string
+          enum: [new, qualified, contacted, converted, lost]
+        source:
+          type: ["string", "null"]
+        value:
+          type: ["number", "null"]
+        assignedAgent:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+
+    LeadInput:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        status:
+          type: string
+        source:
+          type: string
+        value:
+          type: number
+        notes:
+          type: string
+
+    LeadUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        status:
+          type: string
+        source:
+          type: string
+        value:
+          type: number
+        assignedAgent:
+          type: string
+        notes:
+          type: string
+
+    Appointment:
+      type: object
+      required: [id, contactName, phone, serviceType, scheduledAt, status]
+      properties:
+        id:
+          type: integer
+        contactName:
+          type: string
+        phone:
+          type: string
+        serviceType:
+          type: string
+        scheduledAt:
+          type: string
+          format: date-time
+        duration:
+          type: integer
+        status:
+          type: string
+          enum: [scheduled, completed, cancelled, no_show]
+        agentId:
+          type: ["integer", "null"]
+        notes:
+          type: ["string", "null"]
+
+    AppointmentInput:
+      type: object
+      required: [contactName, phone, serviceType, scheduledAt]
+      properties:
+        contactName:
+          type: string
+        phone:
+          type: string
+        serviceType:
+          type: string
+        scheduledAt:
+          type: string
+          format: date-time
+        duration:
+          type: integer
+        notes:
+          type: string
+
+    AppointmentUpdate:
+      type: object
+      properties:
+        contactName:
+          type: string
+        phone:
+          type: string
+        serviceType:
+          type: string
+        scheduledAt:
+          type: string
+          format: date-time
+        duration:
+          type: integer
+        status:
+          type: string
+        notes:
+          type: string
+
+    FollowUp:
+      type: object
+      required: [id, contactName, type, status, scheduledAt]
+      properties:
+        id:
+          type: integer
+        contactName:
+          type: string
+        phone:
+          type: ["string", "null"]
+        type:
+          type: string
+          enum: [nurture, confirmation, review_request, upsell, satisfaction_check]
+        status:
+          type: string
+          enum: [pending, sent, completed, failed]
+        scheduledAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: ["string", "null"]
+        channel:
+          type: string
+          enum: [sms, email, call]
+        message:
+          type: ["string", "null"]
+
+    FollowUpInput:
+      type: object
+      required: [contactName, type, scheduledAt, channel]
+      properties:
+        contactName:
+          type: string
+        phone:
+          type: string
+        type:
+          type: string
+        scheduledAt:
+          type: string
+          format: date-time
+        channel:
+          type: string
+        message:
+          type: string
+
+    FollowUpUpdate:
+      type: object
+      properties:
+        status:
+          type: string
+        scheduledAt:
+          type: string
+          format: date-time
+        message:
+          type: string
+        completedAt:
+          type: string
+          format: date-time
+
+    DashboardSummary:
+      type: object
+      required: [totalCalls, revenueOnHours, revenueAfterHours, sentimentScore, timeSavedMinutes, activeAlerts, scheduledToday, pendingFollowUps, convertedLeads, agentHealth]
+      properties:
+        totalCalls:
+          type: integer
+        revenueOnHours:
+          type: number
+        revenueAfterHours:
+          type: number
+        sentimentScore:
+          type: number
+        timeSavedMinutes:
+          type: integer
+        activeAlerts:
+          type: integer
+        scheduledToday:
+          type: integer
+        pendingFollowUps:
+          type: integer
+        convertedLeads:
+          type: integer
+        agentHealth:
+          type: number
+
+    Alert:
+      type: object
+      required: [id, type, message, severity, createdAt, dismissed]
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+        message:
+          type: string
+        severity:
+          type: string
+          enum: [info, warning, critical]
+        createdAt:
+          type: string
+          format: date-time
+        dismissed:
+          type: boolean
+
+    AlertDismiss:
+      type: object
+      properties:
+        dismissed:
+          type: boolean
+
+    ActivityItem:
+      type: object
+      required: [id, type, description, createdAt]
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+        description:
+          type: string
+        metadata:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
