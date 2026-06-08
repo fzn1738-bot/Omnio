@@ -33,8 +33,8 @@ export function WorkspaceSwitcher() {
     <div className="flex items-center gap-1.5">
       {/* Company segregation, grouped & sorted by business vertical */}
       <DropdownMenu>
-        <DropdownMenuTrigger className="group flex items-center gap-2 rounded-lg border border-transparent px-2.5 py-1.5 text-left transition-colors hover:border-border hover:bg-muted/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-          <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/10 text-primary">
+        <DropdownMenuTrigger className="group flex items-center gap-2 rounded-full border border-transparent px-2.5 py-1.5 text-left transition-colors hover:border-border hover:bg-muted/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-primary">
             <Building2 className="h-4 w-4" />
           </span>
           <span className="hidden flex-col leading-tight sm:flex">
@@ -83,8 +83,8 @@ export function WorkspaceSwitcher() {
 
       {/* Container / configuration switcher */}
       <DropdownMenu>
-        <DropdownMenuTrigger className="group flex items-center gap-2 rounded-lg border border-transparent px-2.5 py-1.5 text-left transition-colors hover:border-border hover:bg-muted/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-          <span className="flex h-7 w-7 items-center justify-center rounded-md bg-muted text-foreground/70">
+        <DropdownMenuTrigger className="group flex items-center gap-2 rounded-full border border-transparent px-2.5 py-1.5 text-left transition-colors hover:border-border hover:bg-muted/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-muted text-foreground/70">
             <Boxes className="h-4 w-4" />
           </span>
           <span className="hidden flex-col leading-tight md:flex">

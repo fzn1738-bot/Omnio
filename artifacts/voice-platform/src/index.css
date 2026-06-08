@@ -122,7 +122,7 @@
   --app-font-sans: 'Inter', sans-serif;
   --app-font-serif: Georgia, serif;
   --app-font-mono: Menlo, monospace;
-  --radius: 0.7rem;
+  --radius: 0.9rem;
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -177,15 +177,16 @@
   /* App background: soft modern gradient wash with a green halo */
   .app-shell {
     background:
-      radial-gradient(60rem 60rem at 85% -10%, hsl(var(--primary) / 0.08), transparent 60%),
-      radial-gradient(50rem 50rem at -10% 110%, hsl(174 72% 41% / 0.07), transparent 60%),
-      hsl(var(--background));
+      radial-gradient(60rem 60rem at 85% -10%, hsl(var(--primary) / 0.10), transparent 60%),
+      radial-gradient(52rem 52rem at -10% 110%, hsl(174 72% 41% / 0.09), transparent 60%),
+      linear-gradient(180deg, hsl(160 30% 99%), hsl(var(--background)));
   }
 
-  /* Glassy top ribbon */
+  /* Glassy top ribbon with a soft 3D lift */
   .ribbon {
-    background: color-mix(in srgb, hsl(var(--card)) 78%, transparent);
-    backdrop-filter: saturate(1.4) blur(12px);
+    background: color-mix(in srgb, hsl(var(--card)) 82%, transparent);
+    backdrop-filter: saturate(1.5) blur(14px);
+    box-shadow: 0 6px 24px -16px rgba(16, 40, 30, 0.35);
   }
 
   /* Reusable green glow for the brand mark */
