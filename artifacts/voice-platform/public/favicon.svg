@@ -1,3 +1,42 @@
 <svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="180" height="180" rx="36" fill="#FF3C00"/>
+  <defs>
+    <radialGradient id="omnio-aura" cx="50%" cy="50%" r="50%">
+      <stop offset="38%" stop-color="#34f5a0" stop-opacity="0.55" />
+      <stop offset="70%" stop-color="#10b981" stop-opacity="0.20" />
+      <stop offset="100%" stop-color="#059669" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="omnio-core" cx="36%" cy="32%" r="78%">
+      <stop offset="0%" stop-color="#b6ffe0" />
+      <stop offset="38%" stop-color="#2be89a" />
+      <stop offset="78%" stop-color="#0f9d6a" />
+      <stop offset="100%" stop-color="#066b48" />
+    </radialGradient>
+    <linearGradient id="omnio-ring" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d6ffee" />
+      <stop offset="55%" stop-color="#1ed98a" />
+      <stop offset="100%" stop-color="#0a7a52" />
+    </linearGradient>
+    <filter id="omnio-glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="3.2" />
+    </filter>
+  </defs>
+
+  <!-- glowing aura -->
+  <circle cx="90" cy="90" r="86" fill="url(#omnio-aura)" />
+
+  <!-- interlocking rings behind the core -->
+  <g stroke="url(#omnio-ring)" stroke-width="5" fill="none" opacity="0.55" filter="url(#omnio-glow)">
+    <ellipse cx="90" cy="90" rx="62" ry="26" transform="rotate(-30 90 90)" />
+    <ellipse cx="90" cy="90" rx="62" ry="26" transform="rotate(90 90 90)" />
+  </g>
+
+  <!-- core sphere -->
+  <circle cx="90" cy="90" r="44" fill="url(#omnio-core)" />
+  <ellipse cx="74" cy="72" rx="15" ry="10" fill="#ffffff" opacity="0.45" transform="rotate(-30 74 72)" />
+
+  <!-- interlocking rings in front of the core -->
+  <g stroke="url(#omnio-ring)" stroke-width="6" fill="none">
+    <ellipse cx="90" cy="90" rx="62" ry="26" transform="rotate(30 90 90)" />
+    <ellipse cx="90" cy="90" rx="62" ry="26" transform="rotate(-30 90 90)" opacity="0.92" />
+  </g>
 </svg>

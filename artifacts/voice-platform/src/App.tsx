@@ -11,6 +11,7 @@ import AgentMonitor from "@/pages/agents";
 import Appointments from "@/pages/appointments";
 import Leads from "@/pages/leads";
 import FollowUps from "@/pages/follow-ups";
+import Solutions from "@/pages/solutions";
 import Settings from "@/pages/settings";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ function Router() {
       <Route path="/scheduling" component={() => <Layout><Appointments /></Layout>} />
       <Route path="/leads" component={() => <Layout><Leads /></Layout>} />
       <Route path="/follow-ups" component={() => <Layout><FollowUps /></Layout>} />
+      <Route path="/solutions" component={() => <Layout><Solutions /></Layout>} />
       <Route path="/settings" component={() => <Layout><Settings /></Layout>} />
       <Route component={() => <Layout><NotFound /></Layout>} />
     </Switch>

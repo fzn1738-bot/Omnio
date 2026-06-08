@@ -1,0 +1,6 @@
+node_modules/
+artifacts/voice-platform/dist/
+artifacts/mockup-sandbox/dist/
+*.log
+.DS_Store
+artifacts/voice-platform/.tsbuildinfo
