@@ -5,7 +5,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Activity, AlertCircle, Clock, DollarSign, X, Phone, User, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useMemo } from "react";
 import { useWorkspace } from "@/lib/workspace";
+import { scaleMetric, scopeList } from "@/lib/scope";
 
 function MetricCard({ title, value, subValue, icon: Icon, isLoading }: any) {
   return (
@@ -43,6 +45,41 @@ export default function Dashboard() {
   const dismissAlert = useDismissAlert();
   const { company, container } = useWorkspace();
 
+  // Scope the shared API data to the selected container (see lib/scope.ts).
+  const scopedSummary = useMemo(
+    () =>
+      summary && {
+        ...summary,
+        revenueOnHours: scaleMetric(summary.revenueOnHours, container),
+        revenueAfterHours: scaleMetric(summary.revenueAfterHours, container),
+        timeSavedMinutes: scaleMetric(summary.timeSavedMinutes, container),
+      },
+    [summary, container],
+  );
+  const scopedStats = useMemo(
+    () =>
+      stats && {
+        ...stats,
+        callsByDay: stats.callsByDay.map((d) => ({
+          ...d,
+          inbound: scaleMetric(d.inbound, container),
+          outbound: scaleMetric(d.outbound, container),
+        })),
+        callTypes: stats.callTypes.map((t) => ({ ...t, count: scaleMetric(t.count, container) })),
+        dropOffReasons: stats.dropOffReasons.map((r) => ({ ...r, count: scaleMetric(r.count, container) })),
+      },
+    [stats, container],
+  );
+  const scopedAlerts = useMemo(() => alerts && scopeList(alerts, container, (a) => a.id), [alerts, container]);
+  const scopedActivities = useMemo(
+    () => activities && scopeList(activities, container, (a) => a.id),
+    [activities, container],
+  );
+  const scopedCalls = useMemo(
+    () => recentCalls && scopeList(recentCalls, container, (c) => c.id),
+    [recentCalls, container],
+  );
+
   const PIE_COLORS = ['hsl(var(--chart-1))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))', 'hsl(var(--chart-4))', 'hsl(var(--chart-5))'];
 
   return (
@@ -63,25 +100,25 @@ export default function Dashboard() {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         <MetricCard
           title="Revenue (On Hours)"
-          value={summary ? `$${summary.revenueOnHours.toLocaleString()}` : "$0"}
+          value={scopedSummary ? `$${scopedSummary.revenueOnHours.toLocaleString()}` : "$0"}
           icon={DollarSign}
           isLoading={isLoadingSummary}
         />
         <MetricCard
           title="Revenue (After Hours)"
-          value={summary ? `$${summary.revenueAfterHours.toLocaleString()}` : "$0"}
+          value={scopedSummary ? `$${scopedSummary.revenueAfterHours.toLocaleString()}` : "$0"}
           icon={DollarSign}
           isLoading={isLoadingSummary}
         />
         <MetricCard
           title="Avg Sentiment"
-          value={summary ? `${(summary.sentimentScore * 100).toFixed(0)}%` : "0%"}
+          value={scopedSummary ? `${(scopedSummary.sentimentScore * 100).toFixed(0)}%` : "0%"}
           icon={Activity}
           isLoading={isLoadingSummary}
         />
         <MetricCard
           title="Time Saved"
-          value={summary ? `${Math.round(summary.timeSavedMinutes / 60)} hrs` : "0 hrs"}
+          value={scopedSummary ? `${Math.round(scopedSummary.timeSavedMinutes / 60)} hrs` : "0 hrs"}
           icon={Clock}
           isLoading={isLoadingSummary}
         />
@@ -99,7 +136,7 @@ export default function Dashboard() {
               ) : (
                 <div className="h-[300px]">
                   <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={stats?.callsByDay || []} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                    <AreaChart data={scopedStats?.callsByDay || []} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                       <defs>
                         <linearGradient id="colorInbound" x1="0" y1="0" x2="0" y2="1">
                           <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.3} />
@@ -136,7 +173,7 @@ export default function Dashboard() {
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie
-                          data={stats?.callTypes || []}
+                          data={scopedStats?.callTypes || []}
                           cx="50%"
                           cy="50%"
                           innerRadius={60}
@@ -145,7 +182,7 @@ export default function Dashboard() {
                           dataKey="count"
                           nameKey="label"
                         >
-                          {(stats?.callTypes || []).map((entry, index) => (
+                          {(scopedStats?.callTypes || []).map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
                           ))}
                         </Pie>
@@ -167,7 +204,7 @@ export default function Dashboard() {
                 ) : (
                   <div className="h-[200px]">
                     <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={stats?.dropOffReasons || []} layout="vertical" margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
+                      <BarChart data={scopedStats?.dropOffReasons || []} layout="vertical" margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
                         <XAxis type="number" hide />
                         <YAxis dataKey="label" type="category" axisLine={false} tickLine={false} tick={{ fontSize: 12 }} width={100} />
                         <Tooltip cursor={{ fill: 'hsl(var(--muted))' }} contentStyle={{ backgroundColor: 'hsl(var(--card))', borderRadius: '8px', border: '1px solid hsl(var(--border))' }} />
@@ -197,7 +234,7 @@ export default function Dashboard() {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {recentCalls?.map(call => (
+                  {scopedCalls?.map(call => (
                     <div key={call.id} className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0">
                       <div className="flex items-center gap-4">
                         <div className="bg-primary/10 p-2 rounded-full">
@@ -236,13 +273,13 @@ export default function Dashboard() {
                   Array(3).fill(0).map((_, i) => (
                     <div key={i} className="p-4 border-b last:border-0"><Skeleton className="h-12 w-full" /></div>
                   ))
-                ) : alerts?.filter(a => !a.dismissed).length === 0 ? (
+                ) : scopedAlerts?.filter(a => !a.dismissed).length === 0 ? (
                   <div className="p-6 text-center flex flex-col items-center justify-center gap-2">
                     <CheckCircle2 className="w-8 h-8 text-green-500/50" />
                     <span className="text-muted-foreground text-sm font-medium">All systems normal</span>
                   </div>
                 ) : (
-                  alerts?.filter(a => !a.dismissed).map(alert => (
+                  scopedAlerts?.filter(a => !a.dismissed).map(alert => (
                     <div key={alert.id} className="p-4 border-b last:border-0 flex items-start gap-3 hover:bg-muted/50 transition-colors group">
                       <AlertCircle className={`w-5 h-5 mt-0.5 flex-shrink-0 ${
                         alert.severity === 'critical' ? 'text-destructive' : 
@@ -277,10 +314,10 @@ export default function Dashboard() {
                   Array(5).fill(0).map((_, i) => (
                     <div key={i} className="p-4 border-b last:border-0"><Skeleton className="h-8 w-full" /></div>
                   ))
-                ) : activities?.length === 0 ? (
+                ) : scopedActivities?.length === 0 ? (
                   <div className="p-6 text-center text-muted-foreground text-sm">No recent activity</div>
                 ) : (
-                  activities?.map(activity => (
+                  scopedActivities?.map(activity => (
                     <div key={activity.id} className="p-4 border-b border-border/50 last:border-0 flex items-start gap-3 hover:bg-muted/30 transition-colors">
                       <div className="w-2 h-2 rounded-full bg-primary mt-1.5 flex-shrink-0 ring-4 ring-primary/10"></div>
                       <div className="flex-1 min-w-0">

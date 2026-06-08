@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { useWorkspace, type Container } from "@/lib/workspace";
+import { useWorkspace, companiesByVertical, type Container } from "@/lib/workspace";
 
 const ENV_STYLES: Record<Container["env"], string> = {
   production: "bg-primary/10 text-primary",
@@ -25,38 +25,57 @@ function EnvBadge({ env }: { env: Container["env"] }) {
 }
 
 export function WorkspaceSwitcher() {
-  const { companies, company, container, setCompanyId, setContainerId } = useWorkspace();
+  const { company, vertical, container, setCompanyId, setContainerId } = useWorkspace();
+  const groups = companiesByVertical();
+  const VerticalIcon = vertical.icon;
 
   return (
     <div className="flex items-center gap-1.5">
-      {/* Company segregation */}
+      {/* Company segregation, grouped & sorted by business vertical */}
       <DropdownMenu>
         <DropdownMenuTrigger className="group flex items-center gap-2 rounded-lg border border-transparent px-2.5 py-1.5 text-left transition-colors hover:border-border hover:bg-muted/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
           <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/10 text-primary">
             <Building2 className="h-4 w-4" />
           </span>
           <span className="hidden flex-col leading-tight sm:flex">
-            <span className="text-[11px] text-muted-foreground">Company</span>
+            <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
+              <VerticalIcon className="h-3 w-3" />
+              {vertical.name}
+            </span>
             <span className="max-w-[12rem] truncate text-sm font-semibold">{company.name}</span>
           </span>
           <ChevronsUpDown className="h-3.5 w-3.5 text-muted-foreground" />
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="start" className="w-64">
-          <DropdownMenuLabel>Switch company</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          {companies.map((c) => (
-            <DropdownMenuItem
-              key={c.id}
-              onClick={() => setCompanyId(c.id)}
-              className="flex items-center justify-between gap-2"
-            >
-              <span className="flex flex-col">
-                <span className="text-sm font-medium">{c.name}</span>
-                <span className="text-xs text-muted-foreground">{c.segment}</span>
-              </span>
-              {c.id === company.id && <Check className="h-4 w-4 text-primary" />}
-            </DropdownMenuItem>
-          ))}
+        <DropdownMenuContent align="start" className="w-72">
+          {groups.map((group, i) => {
+            const GIcon = group.vertical.icon;
+            return (
+              <div key={group.vertical.id}>
+                {i > 0 && <DropdownMenuSeparator />}
+                <DropdownMenuLabel className="flex items-center gap-2 text-xs">
+                  <span className={cn("flex h-5 w-5 items-center justify-center rounded", group.vertical.accent)}>
+                    <GIcon className="h-3 w-3" />
+                  </span>
+                  {group.vertical.name}
+                </DropdownMenuLabel>
+                {group.companies.map((c) => (
+                  <DropdownMenuItem
+                    key={c.id}
+                    onClick={() => setCompanyId(c.id)}
+                    className="flex items-center justify-between gap-2 pl-3"
+                  >
+                    <span className="flex flex-col">
+                      <span className="text-sm font-medium">{c.name}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {c.containers.length} container{c.containers.length === 1 ? "" : "s"}
+                      </span>
+                    </span>
+                    {c.id === company.id && <Check className="h-4 w-4 text-primary" />}
+                  </DropdownMenuItem>
+                ))}
+              </div>
+            );
+          })}
         </DropdownMenuContent>
       </DropdownMenu>
 

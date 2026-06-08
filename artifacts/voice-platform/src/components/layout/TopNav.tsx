@@ -6,6 +6,7 @@ import {
   Calendar,
   Users,
   MessageSquare,
+  Boxes,
   Settings,
   LifeBuoy,
   Bell,
@@ -24,6 +25,7 @@ const NAV_ITEMS = [
   { href: "/scheduling", label: "Appointments", icon: Calendar },
   { href: "/leads", label: "Sales Leads", icon: Users },
   { href: "/follow-ups", label: "Follow-ups", icon: MessageSquare },
+  { href: "/solutions", label: "Solutions", icon: Boxes },
 ];
 
 const SECONDARY_ITEMS = [
