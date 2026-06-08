@@ -5,6 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Activity, AlertCircle, Clock, DollarSign, X, Phone, User, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useWorkspace } from "@/lib/workspace";
 
 function MetricCard({ title, value, subValue, icon: Icon, isLoading }: any) {
   return (
@@ -40,6 +41,7 @@ export default function Dashboard() {
   const { data: activities, isLoading: isLoadingActivity } = useListActivity({ limit: 10 });
   const { data: recentCalls, isLoading: isLoadingCalls } = useListCalls({ limit: 5 });
   const dismissAlert = useDismissAlert();
+  const { company, container } = useWorkspace();
 
   const PIE_COLORS = ['hsl(var(--chart-1))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))', 'hsl(var(--chart-4))', 'hsl(var(--chart-5))'];
 
@@ -48,7 +50,9 @@ export default function Dashboard() {
       <div className="flex justify-between items-end">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
-          <p className="text-muted-foreground">Overview of your voice AI operations</p>
+          <p className="text-muted-foreground">
+            {company.name} · <span className="text-foreground/70">{container.name}</span> — voice AI operations overview
+          </p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm">Last 7 days</Button>

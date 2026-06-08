@@ -1,6 +1,6 @@
-# [Project name]
+# Omnio
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+Omnio is an AI voice agent platform that handles phone calls, scheduling, follow-ups, and sales leads — backed by self-healing ops agents — with a multi-company workspace where each company can switch between solution containers/configurations.
 
 ## Run & Operate
 
