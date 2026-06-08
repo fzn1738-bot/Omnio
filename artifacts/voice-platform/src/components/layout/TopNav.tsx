@@ -96,8 +96,20 @@ export function TopNav() {
         </div>
       </div>
 
-      {/* Tier 2 — centered primary navigation */}
-      <nav className="flex items-center justify-center gap-1 overflow-x-auto px-2 lg:px-4">
+      {/* Tier 2 — workspace switchers (left) + search (right) on one row */}
+      <div className="flex items-center gap-3 px-4 pt-1 lg:px-6">
+        <WorkspaceSwitcher />
+        <div className="relative ml-auto w-full max-w-md">
+          <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            placeholder="Search calls, leads, agents, appointments..."
+            className="h-10 rounded-full border-border/60 bg-card pl-10 shadow-sm transition-all focus-visible:shadow-md focus-visible:ring-1"
+          />
+        </div>
+      </div>
+
+      {/* Tier 3 — centered primary navigation */}
+      <nav className="flex items-center justify-center gap-1 overflow-x-auto px-2 pb-3 pt-2 lg:px-4">
         {NAV_ITEMS.map((item) => {
           const isActive = location === item.href;
           return (
@@ -117,18 +129,6 @@ export function TopNav() {
           );
         })}
       </nav>
-
-      {/* Tier 3 — workspace switchers (left) + search (right) on one row */}
-      <div className="flex items-center gap-3 px-4 pb-3 pt-1 lg:px-6">
-        <WorkspaceSwitcher />
-        <div className="relative ml-auto w-full max-w-md">
-          <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder="Search calls, leads, agents, appointments..."
-            className="h-10 rounded-full border-border/60 bg-card pl-10 shadow-sm transition-all focus-visible:shadow-md focus-visible:ring-1"
-          />
-        </div>
-      </div>
     </header>
   );
 }
