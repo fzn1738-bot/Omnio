@@ -1,0 +1,1 @@
+{"version":3,"file":"listLeadsParams.d.ts","sourceRoot":"","sources":["../../../src/generated/types/listLeadsParams.ts"],"names":[],"mappings":"AAAA;;;;;;GAMG;AACH,OAAO,KAAK,EAAE,eAAe,EAAE,MAAM,mBAAmB,CAAC;AAEzD,MAAM,MAAM,eAAe,GAAG;IAC9B,MAAM,CAAC,EAAE,eAAe,CAAC;IACzB,KAAK,CAAC,EAAE,MAAM,CAAC;CACd,CAAC"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"appointmentInput.d.ts","sourceRoot":"","sources":["../../../src/generated/types/appointmentInput.ts"],"names":[],"mappings":"AAAA;;;;;;GAMG;AAEH,MAAM,WAAW,gBAAgB;IAC/B,WAAW,EAAE,MAAM,CAAC;IACpB,KAAK,EAAE,MAAM,CAAC;IACd,WAAW,EAAE,MAAM,CAAC;IACpB,WAAW,EAAE,IAAI,CAAC;IAClB,QAAQ,CAAC,EAAE,MAAM,CAAC;IAClB,KAAK,CAAC,EAAE,MAAM,CAAC;CAChB"}

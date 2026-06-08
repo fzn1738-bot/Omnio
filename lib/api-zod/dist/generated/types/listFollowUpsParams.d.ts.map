@@ -1,0 +1,1 @@
+{"version":3,"file":"listFollowUpsParams.d.ts","sourceRoot":"","sources":["../../../src/generated/types/listFollowUpsParams.ts"],"names":[],"mappings":"AAAA;;;;;;GAMG;AACH,OAAO,KAAK,EAAE,mBAAmB,EAAE,MAAM,uBAAuB,CAAC;AAEjE,MAAM,MAAM,mBAAmB,GAAG;IAClC,MAAM,CAAC,EAAE,mBAAmB,CAAC;IAC7B,KAAK,CAAC,EAAE,MAAM,CAAC;CACd,CAAC"}
