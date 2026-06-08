@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "nohup bash \"$CLAUDE_PROJECT_DIR/scripts/start-omnio.sh\" > /tmp/omnio-boot.log 2>&1 &"
+          }
+        ]
+      }
+    ]
+  }
+}
